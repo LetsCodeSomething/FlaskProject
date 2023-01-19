@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <link rel="stylesheet" type="text/css" href="/static/css/common/menu.css">
+    <link rel="stylesheet" type="text/css" href="/static/css/common/buttons.css">
+    <link rel="stylesheet" type="text/css" href="/static/css/posts.css">
+    <title>Посты</title>
+</head>
+<body>
+    <div class="posts-wrapper">
+        <div class="menu-wrapper">
+            <div class="menu-item">
+                <a href="{{url_for("index")}}">
+                    Генератор
+                </a>
+            </div>
+            <div class="menu-item-selected">
+                <a href="{{url_for("posts")}}">
+                    Посты
+                </a>
+            </div>
+            <div class="menu-item">
+                {% if nickname %}
+                    <a href="{{url_for("profile")}}">
+                        Профиль - [{{nickname}}] 
+                    </a>
+                {% else %}
+                    <a href="{{url_for("login")}}">
+                        Войти
+                    </a>
+                {% endif %}
+            </div>
+        </div>
+        <div class="posts-posts-wrapper">
+            <div class="fixed-panel">
+                {% if nickname %}
+                    <form method="GET" action="{{url_for("profile")}}">
+                        <input type="submit" class="button" value="Выбрать изображение и создать пост" style="font-size: 16px;">
+                    </form>
+                {% else %}
+                    <a href="{{url_for("login")}}">Войдите в аккаунт или зарегистрируйтесь</a>, чтобы создавать посты!
+                {% endif %}
+            </div>
+            <div class="empty-panel"></div>
+            {% for i in range(len(posts))%}
+                <div class="post">
+                    <span style="font-weight: bold;">[{{posts.loc[i, "post_creation_date"]}}]</span> 
+                    {% if posts.loc[i, "user_role"] == 0 %}
+                        {% if posts.loc[i, "user_nickname"] == nickname %}
+                            <span>&nbsp;ВЫ</span> 
+                        {% else %}
+                            <span>&nbsp;{{posts.loc[i, "user_nickname"]}}</span> 
+                        {% endif %}
+                    {% else %}
+                        {% if posts.loc[i, "user_nickname"] == nickname %}
+                            <span style="color:red;">&nbsp;ВЫ</span>
+                        {% else %}
+                            <span style="color:red;">&nbsp;[ADMIN] {{posts.loc[i, "user_nickname"]}}</span>
+                        {% endif %}
+                    {% endif %}
+                        <span style="font-weight: bold;">&nbsp;&ndash;&nbsp;{{posts.loc[i, "post_title"]}}</span>
+                    {% if posts.loc[i, "post_creation_date"] != posts.loc[i, "post_last_update_date"] %}
+                        <span style="color:#6c6c6c;">&nbsp;обновлено&nbsp;{{posts.loc[i, "post_last_update_date"]}}</span>
+                    {% endif %}
+                    <form style="margin-left: auto; order: 2;" method="GET" action="{{url_for("read_post")}}">
+                        <input type="hidden" value="{{posts.loc[i, "post_id"]}}" name="post_id">
+                        <input type="submit" class="button" style="min-width: 100px; font-size: 16px; float: right;" value="Читать">
+                    </form>
+                </div>
+            {% endfor %}
+        </div>
+    </div>
+</body>
+</html>

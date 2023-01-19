@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <link rel="stylesheet" type="text/css" href="/static/css/common/menu.css">
+    <link rel="stylesheet" type="text/css" href="/static/css/common/buttons.css">
+    <link rel="stylesheet" type="text/css" href="/static/css/common/textboxes.css">
+    <link rel="stylesheet" type="text/css" href="/static/css/read_post.css">
+    <title>Пост</title>
+</head>
+<body>
+    <div class="read-post-wrapper">
+        <div class="menu-wrapper">
+            <div class="menu-item">
+                <a href="{{url_for("index")}}">
+                    Генератор
+                </a>
+            </div>
+            <div class="menu-item-selected">
+                <a href="{{url_for("posts")}}">
+                    Пост
+                </a>
+            </div>
+            <div class="menu-item">
+                {% if nickname %}
+                    <a href="{{url_for("profile")}}">
+                        Профиль - [{{nickname}}] 
+                    </a>
+                {% else %}
+                    <a href="{{url_for("login")}}">
+                        Войти
+                    </a>
+                {% endif %}
+            </div>
+        </div>
+        <div class="read-post-panel-wrapper">
+            <div>
+                <span style="font-weight: bold;">[{{post.loc[0, "post_creation_date"]}}]</span> 
+                {% if post.loc[0, "user_role"] == 0 %}
+                    <span>&nbsp;{{post.loc[0, "user_nickname"]}}</span> 
+                {% else %}
+                    <span style="color:red;">&nbsp;[ADMIN] {{post.loc[0, "user_nickname"]}}</span>
+                {% endif %}
+                {% if post.loc[0, "post_creation_date"] != post.loc[0, "post_last_update_date"] %}
+                    <span style="color:#6c6c6c;">&nbsp;обновлено&nbsp;{{post.loc[0, "post_last_update_date"]}}</span>
+                {% endif %}
+            </div>
+            <div class="bold-label">
+                {{post.loc[0, "post_title"]}}
+            </div>
+            <div style="display: flex; align-items: center; justify-content: center; margin-top: 10px;">
+                <img src="{{post.loc[0, "image_base64"]}}">
+            </div>
+
+            {% if post.loc[0, "image_formula"] == 0 %}
+                <div class="bold-label">Фрактал: множество Мандельброта</div>
+            {% else %}
+                <div class="bold-label">Формула: множество Жюлиа</div>
+            {% endif %}
+
+            {% if post.loc[0, "image_palette"] == 0 %}
+                <div class="bold-label">Палитра: чёрно-белая</div>
+            {% else %}
+                {% if post.loc[0, "image_palette"] == 1 %}
+                    <div class="bold-label">Палитра: градиентная</div>
+                {% else %}
+                    <div class="bold-label">Палитра: оттенки синего</div>
+                {% endif %}
+            {% endif %}
+            
+            <div class="bold-label">X: {{post.loc[0, "image_dx"]}}</div>
+            <div class="bold-label">Y: {{post.loc[0, "image_dy"]}}</div>
+            <div class="bold-label">CX: {{post.loc[0, "image_cx"]}}</div>
+            <div class="bold-label">CY: {{post.loc[0, "image_cy"]}}</div>
+            <div class="bold-label">Масштаб: {{post.loc[0, "image_scale"]}}</div>
+            <div class="bold-label">Предел удаления: {{post.loc[0, "image_bailout"]}}</div>
+            <div class="bold-label">Макс. итераций: {{post.loc[0, "image_n"]}}</div>
+            <div class="bold-label">Ширина: {{post.loc[0, "image_width"]}}</div>
+            <div class="bold-label">Высота: {{post.loc[0, "image_height"]}}</div>
+
+            {% if post.loc[0, "image_origin_post_id"] and post.loc[0, "image_origin_post_id"] != -1 %}
+                <div class="bold-label"><a href="/read_post?post_id={{post.loc[0, "image_origin_post_id"]}}">Сделано на базе этого поста</a></div>
+            {% endif %}
+
+            <div>
+                {{post.loc[0, "post_text"]}}
+            </div>
+            <div>
+                <form method="GET" action="{{url_for("index")}}">
+                    <input type="hidden" name="formula" value="{{post.loc[0, "image_formula"]}}">
+                    <input type="hidden" name="palette" value="{{post.loc[0, "image_palette"]}}">
+                    <input type="hidden" name="dx" value="{{post.loc[0, "image_dx"]}}">
+                    <input type="hidden" name="dy" value="{{post.loc[0, "image_dy"]}}">
+                    <input type="hidden" name="cx" value="{{post.loc[0, "image_cx"]}}">
+                    <input type="hidden" name="cy" value="{{post.loc[0, "image_cy"]}}">
+                    <input type="hidden" name="scale" value="{{post.loc[0, "image_scale"]}}">
+                    <input type="hidden" name="bailout" value="{{post.loc[0, "image_bailout"]}}">
+                    <input type="hidden" name="n" value="{{post.loc[0, "image_n"]}}">
+                    <input type="hidden" name="width" value="{{post.loc[0, "image_width"]}}">
+                    <input type="hidden" name="height" value="{{post.loc[0, "image_height"]}}">
+                    <input type="hidden" name="origin" value="{{post.loc[0, "post_id"]}}">
+                    <input type="submit" class="button" value="Попробовать формулу" style="font-size: 16px; float: left; max-width: 250px;">
+                </form>
+                {% if user_id == post.loc[0, "user_id"] or user_role == 1 %}
+                    <form method="POST" action="{{url_for("edit_post")}}" style="display: flex; flex-direction: column;">
+                        <input type="hidden" name="post_id" value="{{post.loc[0, "post_id"]}}">
+                        <input type="submit" class="button" value="Редактировать" style="font-size: 16px; float: left; max-width: 150px;">
+                    </form>
+                    <form method="POST" action="{{url_for("remove_post")}}">
+                        <input type="hidden" name="post_id" value="{{post.loc[0, "post_id"]}}">
+                        <input type="hidden" name="nickname" value="{{nickname}}">
+                        <input type="hidden" name="password_hash" value="{{password_hash}}">
+                        <input type="submit" class="red-button" value="Удалить" style="font-size: 16px; float: left; max-width: 150px; min-width: 150px; margin-top: 10px;">
+                    </form>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</body>
+</html>

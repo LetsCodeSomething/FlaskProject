@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <link rel="stylesheet" type="text/css" href="/static/css/common/menu.css">
+    <link rel="stylesheet" type="text/css" href="/static/css/common/textboxes.css">
+    <link rel="stylesheet" type="text/css" href="/static/css/common/dropdown.css">
+    <link rel="stylesheet" type="text/css" href="/static/css/common/buttons.css">
+    <link rel="stylesheet" type="text/css" href="/static/css/index.css">
+    <script src="{{url_for("static", filename="javascript/index.js")}}"></script>
+
+    {% macro render_drop_down(name, id, items, selected_index) %}
+        <select class="dropdown" style="width: 200px;" id="{{id}}" name="{{name}}">
+            {% for i in range(len(items)) %}
+                {% if i == selected_index %}
+                    <option selected="selected">{{items[i]}}</option>
+                {% else %}
+                    <option>{{items[i]}}</option>
+                {% endif %}
+            {% endfor %}
+        </select>
+    {% endmacro%}
+    <title>Генератор</title>
+</head>
+<body>
+    <div class="index-wrapper">
+        <div class="menu-wrapper">
+            <div class="menu-item-selected">
+                <a href="{{url_for("index")}}">
+                    Генератор
+                </a>
+            </div>
+            <div class="menu-item">
+                <a href="{{url_for("posts")}}">
+                    Посты
+                </a>
+            </div>
+            <div class="menu-item">
+                {% if nickname %}
+                    <a href="{{url_for("profile")}}">
+                        Профиль - [{{nickname}}] 
+                    </a>
+                {% else %}
+                    <a href="{{url_for("login")}}">
+                        Войти
+                    </a>
+                {% endif %}
+            </div>
+        </div>
+        <div class="generator-wrapper">
+            <div class="parameters-panel">
+                <form method="POST" action="{{url_for("save_image")}}">
+                    <div class="bold-label">Параметры изображения:</div>
+                    <div class="parameter-pair">
+                        Формула: 
+                        {{ render_drop_down("formula", "formula", formulas, formula) }}
+                    </div>
+                    <div class="parameter-pair">
+                        Палитра:
+                        {{ render_drop_down("palette", "palette", palettes, palette) }}
+                    </div>
+                    <div class="parameter-pair">
+                        X:
+                        <input type="text" class="textbox" style="width: 200px;" id="dx" name="dx" value="{{dx}}">
+                    </div>
+                    <div class="parameter-pair">
+                        Y:
+                        <input type="text" class="textbox" style="width: 200px;" id="dy" name="dy" value="{{dy}}">
+                    </div>
+                    <div class="parameter-pair">
+                        CX:
+                        <input type="text" class="textbox" style="width: 200px;" id="cx" name="cx" value="{{cx}}">
+                    </div>
+                    <div class="parameter-pair">
+                        CY:
+                        <input type="text" class="textbox" style="width: 200px;" id="cy" name="cy" value="{{cy}}">
+                    </div>
+                    <div class="parameter-pair">
+                        Масштаб:
+                        <input type="text" class="textbox" style="width: 200px;" id="scale" name="scale" value="{{scale}}">
+                    </div>
+                    <div class="parameter-pair">
+                        Предел удаления:
+                        <input type="text" class="textbox" style="width: 200px;" id="bailout" name="bailout" value="{{bailout}}">
+                    </div>
+                    <div class="parameter-pair">
+                        Максимум итераций:
+                        <input type="text" class="textbox" style="width: 200px;" id="n" name="n" value="{{n}}">
+                    </div>
+                    <div class="parameter-pair">
+                        Ширина:
+                        <input type="text" class="textbox" style="width: 200px;" id="width" name="width" value="{{width}}">
+                    </div>
+                    <div class="parameter-pair">
+                        Высота:
+                        <input type="text" class="textbox" style="width: 200px;" id="height" name="height" value="{{height}}">
+                    </div>
+                    <input type="hidden" name="base64" value="" id="base64">
+                    {% if origin %}
+                        <input type="hidden" name="origin" value="{{origin}}">
+                    {% else %}
+                        <input type="hidden" name="origin" value="-1">
+                    {% endif %}
+                    <div class="bold-label">Пресеты:</div>
+                    <div class="parameter-pair">
+                        <div class="button" id="preset1Button">Пресет 1: Множество Мандельброта</div>
+                    </div>
+                    <div class="parameter-pair">
+                        <div class="button" id="preset2Button">Пресет 2: Множество Мандельброта</div>
+                    </div>
+                    <div class="parameter-pair">
+                        <div class="button" id="preset3Button">Пресет 3: Множество Жюлиа</div>
+                    </div>
+                    <div class="error-label" id="errorLabel"></div>
+                    <div class="bold-label">Генерация & сохранение</div>
+                    <div class="parameter-pair">
+                        <div class="button" id="generateButton">Сгенерировать</div>
+                    </div>
+                    {% if nickname %}
+                    <div class="parameter-pair">
+                        <input type="hidden" name="nickname" value="{{nickname}}">
+                        {% if image_id %}
+                            <input type="hidden" name="image_id" value="{{image_id}}">
+                            <input type="submit" value="Сохранить изменения" class="button" style="width: 370px; font-size: 16px;">
+                        {% else %}
+                            <input type="submit" value="Сохранить в личном кабинете" class="button" style="width: 370px; font-size: 16px;">
+                        {% endif %}
+                    </div>
+                    {% else %}
+                        <a href="{{url_for("login")}}">Войдите в аккаунт или зарегистрируйтесь</a>, чтобы сохранять изображения!
+                    {% endif %}
+                    {% if password_hash %}
+                        <input type="hidden" name="password_hash" value="{{password_hash}}">
+                    {% endif %}
+                </form>
+            </div>
+            <div class="canvas-wrapper">
+                <canvas width="{{width}}" height="{{height}}" id="fracCanvas" style="background-color: gray;"></canvas>
+            </div>
+        </div>    
+    </div>
+</body>
+</html>

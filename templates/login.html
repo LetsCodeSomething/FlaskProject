@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Вход</title>
+    <link href="/static/css/login.css" rel="stylesheet">
+    <link href="/static/css/common/buttons.css" rel="stylesheet">
+    <link href="/static/css/common/textboxes.css" rel="stylesheet">
+    <link href="/static/css/common/menu.css" rel="stylesheet">
+    <script src="/static/javascript/login.js"></script>
+</head>
+<body>
+<div class="login-wrapper">
+    <div class="menu-wrapper">
+        <div class="menu-item">
+            <a href="{{url_for("index")}}">
+                Генератор
+            </a>
+        </div>
+        <div class="menu-item">
+            <a href="{{url_for("posts")}}">
+                Посты
+            </a>
+        </div>
+        <div class="menu-item-selected">
+            <a href="{{url_for("login")}}">
+                Войти 
+            </a>
+        </div>
+    </div>
+    <div class="login-form">
+        <div class="login-label">
+            <b>Вход</b>
+        </div>
+        <form action="{{url_for("login")}}" method="POST">
+            <div class="label">Никнейм:</div>
+            <input type="text" class="textbox" id="loginTextBox" oninput="processTextChange()" name="nickname" style="width: 300px;">
+            <div class="label">Пароль:</div>
+            <input type="password" class="textbox" id="passwordTextBox" oninput="processTextChange()" name="password" style="width: 300px;">
+            <div>
+                <input type="submit" class="button" value="Войти" disabled="disabled" id="loginButton" style="width: 308px; margin-top: 10px; font-size: 16px;">
+            </div>
+        </form>
+        <div class="error-label">
+            {% if error_message%}
+                {{error_message}}
+            {% endif %}
+        </div>
+        <div class="register-label"><a href="{{url_for("register")}}">Регистрация</a></div>
+    </div>
+</div>
+</body>
+</html>

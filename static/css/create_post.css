@@ -1,0 +1,24 @@
+* {
+    font-family: Arial;
+}
+
+body {
+    background-image: url(/static/background/background.png); 
+    background-size: cover; 
+    background-repeat: no-repeat;
+}
+
+.create-post-wrapper {
+    display: flex;
+    flex-direction: column;
+    min-height: calc(100vh - 20px);
+}
+
+.create-post-panel-wrapper {
+    padding: 5px;
+    margin-top: 10px;
+    background-color: hsla(0, 0%, 100%, 0.85);
+    flex-grow: 1;
+    display: flex;
+    flex-direction: column;
+}

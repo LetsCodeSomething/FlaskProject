@@ -1,0 +1,59 @@
+.menu-wrapper {
+    display: flex;
+    align-items: center;
+    min-width: 100%;
+}
+
+.menu-item {
+    line-height: 70px;
+    flex-grow: 1;
+    flex-basis: 0;
+    text-align: center;
+    font-size: 20px;
+    border: solid 2px #39197c;
+    background-color: #6525e5;
+    transition:.3s;
+    border-radius: 2px;
+    max-height: 70px;
+}
+
+.menu-item:hover {
+    background-color: #9a6cf5;
+}
+
+.menu-item-selected {
+    line-height: 70px;
+    flex-grow: 1;
+    flex-basis: 0;
+    text-align: center;
+    font-size: 20px;
+    border: solid 2px #39197c;
+    background-color: #9a6cf5;
+    color:white;
+    border-radius: 2px;
+    max-height: 70px;
+}
+
+.menu-wrapper div a:link {
+    color: #d9d9d9;
+    text-decoration: none;
+    display: block;
+}
+
+.menu-wrapper div a:visited {
+    color: #d9d9d9;
+    text-decoration: none;
+    display: block;
+}
+
+.menu-wrapper div a:hover {
+    color: #d9d9d9;
+    text-decoration: none;
+    display: block;
+}
+
+.menu-wrapper div a:active {
+    color: #d9d9d9;
+    text-decoration: none;
+    display: block;
+}

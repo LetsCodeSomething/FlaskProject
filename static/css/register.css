@@ -1,0 +1,39 @@
+* {
+    font-family: Arial;
+}
+
+body {
+    background-image: url(/static/background/background.png); 
+    background-size: cover; 
+    background-repeat: no-repeat;
+}
+
+.register-wrapper {
+    flex-grow: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 20px;
+}
+
+.register-label {
+    text-align: center;
+}
+
+.label {
+    margin-top: 10px;
+    margin-bottom: 5px;
+}
+
+.error-label {
+    margin-top: 10px;
+    color: red;
+    text-align: center;
+    max-width: 290px;
+}
+
+.register-form {
+    padding: 5px;
+    background-color: hsla(0, 0%, 100%, 0.85);
+    min-width: 300px;
+}

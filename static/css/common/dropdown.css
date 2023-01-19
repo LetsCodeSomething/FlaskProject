@@ -1,0 +1,13 @@
+.dropdown {
+    border: solid 2px #6c6c6c;
+    border-radius: 2px;
+    outline: none;
+    transition:.3s;
+    min-height: 20px;
+    float: right;
+}
+
+.dropdown:focus {
+    border-color: #39197c;
+    box-shadow: 0 0 2px #39197c;
+}

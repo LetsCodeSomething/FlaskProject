@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <link rel="stylesheet" type="text/css" href="/static/css/common/menu.css">
+    <link rel="stylesheet" type="text/css" href="/static/css/common/buttons.css">
+    <link rel="stylesheet" type="text/css" href="/static/css/common/textboxes.css">
+    <link rel="stylesheet" type="text/css" href="/static/css/edit_post.css">
+    <title>Редактирование поста</title>
+</head>
+<body>
+    <div class="edit-post-wrapper">
+        <div class="menu-wrapper">
+            <div class="menu-item">
+                <a href="{{url_for("index")}}">
+                    Генератор
+                </a>
+            </div>
+            <div class="menu-item-selected">
+                <a href="{{url_for("posts")}}">
+                    Редактирование поста
+                </a>
+            </div>
+            <div class="menu-item">
+                {% if nickname %}
+                    <a href="{{url_for("profile")}}">
+                        Профиль - [{{nickname}}] 
+                    </a>
+                {% else %}
+                    <a href="{{url_for("login")}}">
+                        Войти
+                    </a>
+                {% endif %}
+            </div>
+        </div>
+        <div class="edit-post-panel-wrapper">
+            <form method="GET" action="{{url_for("edit_post")}}" style="display: flex; flex-direction: column;">
+                <input type="hidden" value="{{post_id}}" name="post_id">
+                <div style="display: flex; align-items: center; justify-content: center;"><img src="{{image_base64}}"></div>
+                <div>Заголовок (не более 32 символов!):</div>
+                <div><input type="text" class="textbox" name="post_title" style="float: left; min-width: 95%; margin-left: 2%" value="{{post_title}}"></div>
+                <div>Заголовок (не более 512 символов!):</div>
+                <div><textarea class="textarea" name="post_text">{{post_text}}</textarea></div>
+                <input type="submit" value="Отредактировать пост" class="button" style="font-size: 16px;">
+            </form>
+        </div>
+    </div>
+</body>
+</html>

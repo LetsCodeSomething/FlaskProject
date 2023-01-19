@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <link rel="stylesheet" type="text/css" href="/static/css/common/menu.css">
+    <link rel="stylesheet" type="text/css" href="/static/css/common/buttons.css">
+    <link rel="stylesheet" type="text/css" href="/static/css/profile.css">
+    <script src="/static/javascript/profile.js"></script>
+    <title>Профиль - [{{nickname}}]</title>
+</head>
+<body>
+    <div class="profile-wrapper">
+        <div class="menu-wrapper">
+            <div class="menu-item">
+                <a href="{{url_for("index")}}">
+                    Генератор
+                </a>
+            </div>
+            <div class="menu-item">
+                <a href="{{url_for("posts")}}">
+                    Посты
+                </a>
+            </div>
+            <div class="menu-item-selected">
+                {% if nickname %}
+                    <a href="">
+                        Профиль - [{{nickname}}] 
+                    </a>
+                {% else %}
+                    <a href="{{url_for("login")}}">
+                        Войти
+                    </a>
+                {% endif %}
+            </div>
+        </div>
+        <div class="profile-menu-wrapper">
+            <div class="profile-menu-items-wrapper">
+                <div class="button" style="min-width: 150px; margin-left: 5px; margin-right: 5px;" id="showImagesButton">Мои изображения</div>
+                <div class="button" style="min-width: 150px;" id="showPostsButton">Мои посты</div>
+            </div>
+            <div class="profile-menu-items-wrapper">
+                <form method="POST" action="{{url_for("remove_profile")}}">
+                    <input type="hidden" name="remove" value="true">
+                    <input type="hidden" name="nickname" value="{{nickname}}">
+                    <input type="hidden" name="password_hash" value="{{password_hash}}">
+                    <input type="submit" class="red-button" style="min-width: 150px; margin-right: 50px; font-size: 16px;" value="Удалить аккаунт">
+                </form>
+                <form method="GET" action="{{url_for("profile")}}">
+                    <input type="hidden" name="exit" value="true">
+                    <input type="submit" class="button" style="min-width: 150px; margin-right: 5px; font-size: 16px;" value="Выход">
+                </form>
+            </div>
+        </div>
+        <div class="profile-content-wrapper">
+            <div style="order: 1;" id="profileImages">
+                {% for i in range(len(user_images)) %}
+                    <div class="profile-image">
+                        <image src="{{user_images.loc[i, "image_base64"]}}"></image>
+                        <div>
+                            <form method="GET" action="{{url_for("index")}}">
+                                <input type="hidden" name="image_id" value="{{user_images.loc[i, "image_id"]}}">
+                                <input type="hidden" name="formula" value="{{user_images.loc[i, "image_formula"]}}">
+                                <input type="hidden" name="palette" value="{{user_images.loc[i, "image_palette"]}}">
+                                <input type="hidden" name="dx" value="{{user_images.loc[i, "image_dx"]}}">
+                                <input type="hidden" name="dy" value="{{user_images.loc[i, "image_dy"]}}">
+                                <input type="hidden" name="cx" value="{{user_images.loc[i, "image_cx"]}}">
+                                <input type="hidden" name="cy" value="{{user_images.loc[i, "image_cy"]}}">
+                                <input type="hidden" name="scale" value="{{user_images.loc[i, "image_scale"]}}">
+                                <input type="hidden" name="bailout" value="{{user_images.loc[i, "image_bailout"]}}">
+                                <input type="hidden" name="n" value="{{user_images.loc[i, "image_n"]}}">
+                                <input type="hidden" name="width" value="{{user_images.loc[i, "image_width"]}}">
+                                <input type="hidden" name="height" value="{{user_images.loc[i, "image_height"]}}">
+                                <input type="hidden" name="origin" value="{{user_images.loc[i, "image_origin_post_id"]}}">
+                                <input type="submit" value="Редактировать" class="button" style="font-size: 16px; min-width: 150px;">
+                            </form>
+                            <form method="GET" action="{{url_for("remove_image")}}">
+                                <input type="hidden" name="nickname" value="{{nickname}}">
+                                <input type="hidden" name="password_hash" value="{{password_hash}}">
+                                <input type="hidden" name="image_id" value="{{user_images.loc[i, "image_id"]}}">
+                                <input type="submit" value="Удалить" class="red-button" style="font-size: 16px; min-width: 150px; margin-top: 10px;">
+                            </form>
+                            <form method="GET" action="{{url_for("create_post")}}">
+                                <input type="hidden" name="image_id" value="{{user_images.loc[i, "image_id"]}}">
+                                <input type="submit" value="Создать пост" class="button" style="font-size: 16px; min-width: 150px; margin-top: 10px;">
+                            </form>
+                        </div>
+                    </div>
+                {% endfor %}
+            </div>
+            <div style="visibility: hidden; order: 2;" id="profilePosts">
+                {% for i in range(len(user_posts))%}
+                    <div class="profile-post">
+                        <span style="font-weight: bold;">[{{user_posts.loc[i, "post_creation_date"]}}]</span> 
+                        {% if user_posts.loc[i, "user_role"] == 0 %}
+                            <span> ВЫ </span> 
+                        {% else %}
+                            <span style="color:red;">[ADMIN] ВЫ </span>
+                        {% endif %}
+                            <span style="font-weight: bold;">&nbsp;&ndash;&nbsp;{{user_posts.loc[i, "post_title"]}}</span>
+                        {% if user_posts.loc[i, "post_creation_date"] != user_posts.loc[i, "post_last_update_date"] %}
+                            <span style="color:#6c6c6c;">обновлено&nbsp;{{user_posts.loc[i, "post_last_update_date"]}}</span>
+                        {% endif %}
+                        <div style="margin-left: auto; display: flex; gap: 5px; float: right;">
+                            <form method="GET" action="{{url_for("read_post")}}">
+                                <input type="hidden" value="{{user_posts.loc[i, "post_id"]}}" name="post_id">
+                                <input type="submit" class="button" style="min-width: 100px; font-size: 16px; float: right;" value="Читать">
+                            </form>
+                            <form method="POST" action="{{url_for("edit_post")}}">
+                                <input type="hidden" value="{{user_posts.loc[i, "post_id"]}}" name="post_id">
+                                <input type="submit" class="button" style="min-width: 100px; font-size: 16px; float: right;" value="Редактировать">
+                            </form>
+                            <form method="POST" action="{{url_for("remove_post")}}">
+                                <input type="hidden" value="{{user_posts.loc[i, "post_id"]}}" name="post_id">
+                                <input type="hidden" value="{{nickname}}" name="nickname">
+                                <input type="hidden" value="{{password_hash}}" name="password_hash">
+                                <input type="submit" class="red-button" style="min-width: 100px; font-size: 16px; float: right;" value="Удалить">
+                            </form>
+                        </div>
+                    </div>
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+</body>
+</html>
