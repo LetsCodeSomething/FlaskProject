@@ -2,7 +2,9 @@ import sqlite3
 import pandas
 
 def get_db_connection():
-    return sqlite3.connect('db.sqlite')
+    con = sqlite3.connect("db.sqlite")
+    con.execute("PRAGMA foreign_keys = ON")
+    return con
 
 def is_nickname_password_pair_correct(con, nickname, password_hash):
     df = pandas.read_sql('''select user_id from User 

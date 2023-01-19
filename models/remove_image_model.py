@@ -2,7 +2,7 @@ import pandas
 
 def remove_user_image(con, image_id):
     con.execute("delete from Image where image_id = ?", (image_id,))
-    con.execute("delete from Post where image_id = ?", (image_id,))
+    #con.execute("delete from Post where image_id = ?", (image_id,))
     con.commit()
 
 def user_owns_image(con, image_id, user_id):
